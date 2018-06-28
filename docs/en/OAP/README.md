@@ -11,16 +11,14 @@ learn and use.
 ### Grammar
 Scripts should be named as `*.oal`
 ```
-import(SCOPE)
 
-VAR = from(FIELD[, [OTHER_FIELD | 1] *])
+VAR = from(SCOPE.(* | [FIELD][,FIELD ...]))
 [.filter(FIELD OP [INT | STRING])]
-.FUNCTION([PARAM][,OTHER_PARAM]*)
+.FUNCTION([PARAM][, PARAM ...])
 ```
 
 #### Scope
-**SCOPE** in (`All`, `Service`, `ServiceInst`, `Endpoint`), and only can import a single SCOPE.
-Can't and should not aggregate metric on different scope.
+**SCOPE** in (`All`, `Service`, `ServiceInst`, `Endpoint`, `ServiceRelation`, `ServiceRelation`, `EndpointRelation`).
 
 #### Field
 TODO
@@ -47,31 +45,28 @@ All metric data will be grouped by Scope.ID and min-level TimeBucket.
 
 ### Examples
 ```
-import(Endpoint)
-
 // Caculate p99 of both endpoint1 and endpoint2
-endpoint_p99 = from(latency).filter(name in ("endpoint1", "endpoint2")).summary(0.99)
+endpoint_p99 = from(Endpoint.latency).filter(name in ("endpoint1", "endpoint2")).summary(0.99)
 
 // Caculate p99 of endpoint name started with `serv`
-serv_endpoint_p99 = from(latency).filter(name like ("serv%")).summary(0.99)
+serv_endpoint_p99 = from(Endpoint.latency).filter(name like ("serv%")).summary(0.99)
 
 // Caculate the avg response time of each endpoint
-endpoint_avg = from(latency).avg()
+endpoint_avg = from(Endpoint.latency).avg()
 
 // Caculate the histogram of each endpoint by 50 ms steps.
 // Always thermodynamic diagram in UI matches this metric. 
-endpoint_histogram = from(latency).histogram(50)
+endpoint_histogram = from(Endpoint.latency).histogram(50)
 
 // Caculate the percent of response status is true, for each service.
-endpoint_success = from(1).filter(status = "true").percent()
+endpoint_success = from(Endpoint.*).filter(status = "true").percent()
 
 // Caculate the percent of response code in [200, 299], for each service.
-endpoint_200 = from(1).filter(responseCode like "2%").percent()
+endpoint_200 = from(Endpoint.*).filter(responseCode like "2%").percent()
 
 // Caculate the percent of response code in [500, 599], for each service.
-endpoint_500 = from(1).filter(responseCode like "5%").percent()
+endpoint_500 = from(Endpoint.*).filter(responseCode like "5%").percent()
 
 // Caculate the sum of calls for each service.
-endpointCalls = from(1).sum()
-
+endpointCalls = from(Endpoint.*).sum()
 ```
