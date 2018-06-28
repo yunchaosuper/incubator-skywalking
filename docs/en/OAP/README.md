@@ -18,7 +18,7 @@ VAR = from(SCOPE.(* | [FIELD][,FIELD ...]))
 ```
 
 #### Scope
-**SCOPE** in (`All`, `Service`, `ServiceInst`, `Endpoint`, `ServiceRelation`, `ServiceRelation`, `EndpointRelation`).
+**SCOPE** in (`All`, `Service`, `ServiceInst`, `Endpoint`, `ServiceRelation`, `ServiceInstRelation`, `EndpointRelation`).
 
 #### Field
 TODO
